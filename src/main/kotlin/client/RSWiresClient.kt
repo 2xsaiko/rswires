@@ -4,8 +4,8 @@ import net.dblsaiko.hctm.client.render.model.CacheKey
 import net.dblsaiko.hctm.client.render.model.ModelWrapperHandler
 import net.dblsaiko.hctm.client.render.model.UnbakedWireModel
 import net.dblsaiko.hctm.client.render.model.WireModelParts
-import net.dblsaiko.rswires.client.render.model.GateModel
 import net.dblsaiko.rswires.MOD_ID
+import net.dblsaiko.rswires.client.render.model.GateModel
 import net.dblsaiko.rswires.common.init.Blocks
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
@@ -61,7 +61,7 @@ object RSWiresClient : ClientModInitializer {
 
       { state, model ->
         when (state.block) {
-          Blocks.NullCell -> {
+          Blocks.NULL_CELL -> {
             map.computeIfAbsent(model, ::GateModel)
           }
           else -> model

@@ -25,7 +25,7 @@ object Blocks {
     .strength(0.05f, 0.05f)
     .build()
 
-  private val gateSettings = FabricBlockSettings.of(Material.STONE)
+  private val GATE_SETTINGS = FabricBlockSettings.of(Material.STONE)
     .breakByHand(true)
     .strength(0.05f, 0.05f)
     .build()
@@ -35,7 +35,7 @@ object Blocks {
   val UNCOLORED_BUNDLED_CABLE by create("bundled_cable", BundledCableBlock(WIRE_SETTINGS, null))
   val COLORED_BUNDLED_CABLES by DyeColor.values().associate { it to create("${it.getName()}_bundled_cable", BundledCableBlock(WIRE_SETTINGS, it)) }.flatten()
 
-  val NullCell by create("null_cell", NullCellBlock(gateSettings))
+  val NULL_CELL by create("null_cell", NullCellBlock(GATE_SETTINGS))
 
   private fun <T : Block> create(name: String, block: T): ReadOnlyProperty<Blocks, T> {
     var regBlock: T? = null
