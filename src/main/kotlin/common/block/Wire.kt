@@ -99,7 +99,7 @@ class RedAlloyWireBlock(settings: AbstractBlock.Settings) : BaseRedstoneWireBloc
 
   override fun createPartExtFromSide(side: Direction) = RedAlloyWirePartExt(side)
 
-  override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.RedAlloyWire)
+  override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.RED_ALLOY_WIRE)
 
   override fun isReceivingPower(state: BlockState, world: World, pos: BlockPos) =
     RedstoneWireUtils.isReceivingPower(state, world, pos, true)
@@ -110,7 +110,7 @@ class InsulatedWireBlock(settings: AbstractBlock.Settings, val color: DyeColor) 
 
   override fun createPartExtFromSide(side: Direction) = InsulatedWirePartExt(side, color)
 
-  override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.InsulatedWire)
+  override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.INSULATED_WIRE)
 
   override fun getStrongRedstonePower(state: BlockState, view: BlockView, pos: BlockPos, facing: Direction): Int {
     return 0
@@ -154,7 +154,7 @@ class BundledCableBlock(settings: AbstractBlock.Settings, val color: DyeColor?) 
     return super.overrideConnection(world, pos, state, side, edge, current)
   }
 
-  override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.BundledCable)
+  override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.BUNDLED_CABLE)
 
 }
 
