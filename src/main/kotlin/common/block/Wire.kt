@@ -36,6 +36,7 @@ import net.minecraft.world.dimension.DimensionType
 import java.util.*
 import kotlin.experimental.and
 import kotlin.experimental.or
+import net.dblsaiko.rswires.common.init.Blocks as RSWiresBlocks
 
 abstract class BaseRedstoneWireBlock(settings: AbstractBlock.Settings, height: Float) : SingleBaseWireBlock(settings, height) {
 
@@ -232,7 +233,8 @@ data class BundledCablePartExt(override val side: Direction, val color: DyeColor
   override fun setState(world: World, self: NetNode, state: Boolean) {}
 
   override fun getInput(world: World, self: NetNode): Boolean {
-    return false
+    val pos = self.data.pos
+    return BundledCableUtils.getReceivedData(world.getBlockState(pos), world, pos).toUInt() and (1u shl inner.id) != 0u
   }
 
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
@@ -332,6 +334,31 @@ object RedstoneWireUtils {
            (receiveFromBottom && sides
              .filterNot { world.getBlockState(pos.offset(it)).block == Blocks.REDSTONE_WIRE }
              .any { world.getEmittedRedstonePower(pos.offset(it), it) > 0 })
+  }
+
+}
+
+object BundledCableUtils {
+
+  fun getReceivedData(state: BlockState, world: World, pos: BlockPos): UShort {
+    val sides = WireUtils.getOccupiedSides(state)
+    val inputSides = Direction.values().filter { a -> sides.any { b -> b.axis != a.axis } }.distinct() - sides
+    return inputSides
+      .flatMap { side ->
+        val edges = (Direction.values().toSet() - sides).filter { edge -> edge.axis != side.axis }
+        edges.map { edge ->
+          val otherPos = pos.offset(side)
+          if (world.getBlockState(otherPos).block == RSWiresBlocks.UNCOLORED_BUNDLED_CABLE) 0u
+          else {
+            val state = world.getBlockState(otherPos)
+            val block = state.block
+            if (block is BlockBundledCableIo) {
+              block.getBundledOutput(state, world, pos, side, edge)
+            } else 0u
+          }
+        }
+      }
+      .fold(0u.toUShort()) { a, b -> a or b }
   }
 
 }
