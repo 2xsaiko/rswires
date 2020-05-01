@@ -144,6 +144,13 @@ class BundledCableBlock(settings: AbstractBlock.Settings, val color: DyeColor?) 
     return DyeColor.values().map { BundledCablePartExt(side, color, it) }.toSet()
   }
 
+  override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos, block: Block, neighborPos: BlockPos, moved: Boolean) {
+    if (world is ServerWorld) {
+      WireUtils.updateClient(world, pos) // redstone connections
+      RedstoneWireUtils.scheduleUpdate(world, pos)
+    }
+  }
+
   override fun overrideConnection(world: World, pos: BlockPos, state: BlockState, side: Direction, edge: Direction, current: ConnectionType?): ConnectionType? {
     if (current == null) {
       val blockState = world.getBlockState(pos.offset(edge))
