@@ -353,7 +353,7 @@ object BundledCableUtils {
             val state = world.getBlockState(otherPos)
             val block = state.block
             if (block is BlockBundledCableIo) {
-              block.getBundledOutput(state, world, pos, side, edge)
+              block.getBundledOutput(state, world, otherPos, side.opposite, edge)
             } else 0u
           }
         }
