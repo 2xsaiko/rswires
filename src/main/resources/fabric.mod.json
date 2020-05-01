@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "rswires",
-  "version": "4.3.0",
+  "version": "${version}",
   "name": "RSWires",
   "description": "Improved redstone, or something.",
   "authors": [
