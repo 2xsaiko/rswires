@@ -299,16 +299,16 @@ object RedstoneWireUtils {
   var scheduled = mapOf<DimensionType, Set<UUID>>()
 
   fun scheduleUpdate(world: ServerWorld, pos: BlockPos) {
-    scheduled += world.dimension.type to scheduled[world.dimension.type].orEmpty() + world.getWireNetworkState().controller.getNetworksAt(pos).map { it.id }
+    scheduled += world.dimension to scheduled[world.dimension].orEmpty() + world.getWireNetworkState().controller.getNetworksAt(pos).map { it.id }
   }
 
   fun flushUpdates(world: ServerWorld) {
     val wireNetworkState = world.getWireNetworkState()
-    for (id in scheduled[world.dimension.type].orEmpty()) {
+    for (id in scheduled[world.dimension].orEmpty()) {
       val net = wireNetworkState.controller.getNetwork(id)
       if (net != null) updateState(world, net)
     }
-    scheduled -= world.dimension.type
+    scheduled -= world.dimension
   }
 
   fun updateState(world: World, network: Network) {
