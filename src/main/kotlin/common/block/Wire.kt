@@ -86,7 +86,7 @@ class RedAlloyWireBlock(settings: AbstractBlock.Settings) : BaseRedstoneWireBloc
     return if (
       RSWires.wiresGivePower &&
       state[WireProperties.POWERED] &&
-      state[BaseWireProperties.PLACED_WIRES[facing]]
+      state[BaseWireProperties.PLACED_WIRES[facing.opposite]]
     ) 15 else 0
   }
 
@@ -176,7 +176,16 @@ data class RedAlloyWirePartExt(override val side: Direction) : PartExt, WirePart
 
   override fun setState(world: World, self: NetNode, state: Boolean) {
     val pos = self.data.pos
-    world.setBlockState(pos, world.getBlockState(pos).with(WireProperties.POWERED, state))
+    val state = world.getBlockState(pos).with(WireProperties.POWERED, state)
+    world.setBlockState(pos, state)
+
+    // update neighbors 2 blocks away for strong redstone signal
+    WireUtils.getOccupiedSides(state)
+      .map { pos.offset(it) }
+      .flatMap { Direction.values().map { d -> it.offset(d) } }
+      .distinct()
+      .minus(pos)
+      .forEach { world.updateNeighbor(it, state.block, pos) }
   }
 
   override fun getInput(world: World, self: NetNode): Boolean {
