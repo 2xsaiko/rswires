@@ -1,12 +1,12 @@
 package net.dblsaiko.rswires.common.util
 
 import net.dblsaiko.hctm.common.util.ext.rotateClockwise
+import net.dblsaiko.qcommon.croco.Mat4
+import net.dblsaiko.qcommon.croco.Vec3
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
-import therealfarfetchd.qcommon.croco.Mat4
-import therealfarfetchd.qcommon.croco.Vec3
 import java.util.*
 
 /**
@@ -78,8 +78,8 @@ private fun getRotationFor0(face: Direction, rotation: Int): Mat4 {
 
 fun Box.transform(mat: Mat4): Box {
   return Box(
-    mat.mul(Vec3(x1.toFloat(), y1.toFloat(), z1.toFloat())).toVec3d(),
-    mat.mul(Vec3(x2.toFloat(), y2.toFloat(), z2.toFloat())).toVec3d()
+    mat.mul(Vec3(minX.toFloat(), minY.toFloat(), minZ.toFloat())).toVec3d(),
+    mat.mul(Vec3(maxX.toFloat(), maxY.toFloat(), maxZ.toFloat())).toVec3d()
   )
 }
 

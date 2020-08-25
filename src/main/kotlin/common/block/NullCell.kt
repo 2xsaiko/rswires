@@ -10,9 +10,10 @@ import net.dblsaiko.hctm.common.wire.WirePartExtType
 import net.dblsaiko.hctm.common.wire.find
 import net.dblsaiko.rswires.common.util.adjustRotation
 import net.dblsaiko.rswires.common.util.rotate
+import net.minecraft.block.AbstractBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
-import net.minecraft.entity.EntityContext
+import net.minecraft.block.ShapeContext
 import net.minecraft.nbt.ByteTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.world.ServerWorld
@@ -27,7 +28,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
 
-class NullCellBlock(settings: Block.Settings) : GateBlock(settings) {
+class NullCellBlock(settings: AbstractBlock.Settings) : GateBlock(settings) {
 
   init {
     defaultState = defaultState
@@ -55,7 +56,7 @@ class NullCellBlock(settings: Block.Settings) : GateBlock(settings) {
     return NullCellPartExt(side, rotation, top)
   }
 
-  override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, ePos: EntityContext): VoxelShape {
+  override fun getOutlineShape(state: BlockState, view: BlockView, pos: BlockPos, ePos: ShapeContext): VoxelShape {
     return SELECTION_BOXES.getValue(state[Properties.FACING])
   }
 
