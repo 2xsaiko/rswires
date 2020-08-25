@@ -1,10 +1,10 @@
 package net.dblsaiko.rswires.client.render.model
 
+import net.dblsaiko.qcommon.croco.Vec3
 import net.dblsaiko.rswires.common.block.GateProperties
 import net.dblsaiko.rswires.common.util.getRotationFor
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper
 import net.minecraft.block.BlockState
 import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.render.model.BakedQuad
@@ -19,7 +19,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.BlockRenderView
-import therealfarfetchd.qcommon.croco.Vec3
 import java.util.*
 import java.util.function.Function
 import java.util.function.Supplier
@@ -40,30 +39,15 @@ class GateModel(val wrapped: UnbakedModel) : UnbakedModel by wrapped {
       val (mat, rotationMat) = getRotationFor(side, rotation)
 
       context.pushTransform { quad ->
-        val lightFace = quad.lightFace()
-        run {
-          val shadingFactor = ColorHelper.diffuseShade(lightFace)
-          for (idx in 0..3) {
-            val color = ColorHelper.multiplyRGB(quad.spriteColor(idx, 0), (1 / shadingFactor))
-            quad.spriteColor(idx, 0, color)
-          }
-        }
-
         for (idx in 0..3) {
           val newPos = mat.mul(Vec3(quad.posByIndex(idx, 0), quad.posByIndex(idx, 1), quad.posByIndex(idx, 2)))
           quad.pos(idx, newPos.x, newPos.y, newPos.z)
         }
 
-        run {
-          val lightFace = rotationMat.mul(Vec3.from(lightFace.vector)).let { Direction.getFacing(it.x, it.y, it.z) }
-          val shadingFactor = ColorHelper.diffuseShade(lightFace)
-          for (idx in 0..3) {
-            val color = ColorHelper.multiplyRGB(quad.spriteColor(idx, 0), shadingFactor)
-            quad.spriteColor(idx, 0, color)
-          }
-        }
-
+        val nominalFace = quad.nominalFace()
         quad.cullFace()?.also { quad.cullFace(rotationMat.mul(Vec3.from(it.vector)).let { Direction.getFacing(it.x, it.y, it.z) }) }
+        quad.nominalFace(rotationMat.mul(Vec3.from(nominalFace.vector)).let { Direction.getFacing(it.x, it.y, it.z) })
+
         true
       }
       context.fallbackConsumer().accept(wrapped)
