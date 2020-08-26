@@ -83,6 +83,11 @@ abstract class BaseRedstoneWireBlock(settings: AbstractBlock.Settings, height: F
 class RedAlloyWireBlock(settings: AbstractBlock.Settings) : BaseRedstoneWireBlock(settings, 2 / 16f) {
 
   override fun getStrongRedstonePower(state: BlockState, view: BlockView, pos: BlockPos, facing: Direction): Int {
+    // Fix for comparator side input which only respects strong power
+    if (view.getBlockState(pos.offset(facing.opposite)).block == Blocks.COMPARATOR) {
+      return state.getWeakRedstonePower(view, pos, facing)
+    }
+
     return if (
       RSWires.wiresGivePower &&
       state[WireProperties.POWERED] &&
@@ -114,6 +119,11 @@ class InsulatedWireBlock(settings: AbstractBlock.Settings, val color: DyeColor) 
   override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.INSULATED_WIRE)
 
   override fun getStrongRedstonePower(state: BlockState, view: BlockView, pos: BlockPos, facing: Direction): Int {
+    // Fix for comparator side input which only respects strong power
+    if (view.getBlockState(pos.offset(facing.opposite)).block == Blocks.COMPARATOR) {
+      return state.getWeakRedstonePower(view, pos, facing)
+    }
+
     return 0
   }
 
