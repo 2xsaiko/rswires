@@ -33,7 +33,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
 
-class GenericLogicGateBlock(settings: AbstractBlock.Settings) : GateBlock(settings) {
+class GenericLogicGateBlock(settings: AbstractBlock.Settings, private val logic: GateLogic) : GateBlock(settings) {
 
   init {
     defaultState = defaultState
@@ -49,6 +49,23 @@ class GenericLogicGateBlock(settings: AbstractBlock.Settings) : GateBlock(settin
     builder.add(LogicGateProperties.LEFT_POWERED)
     builder.add(LogicGateProperties.BACK_POWERED)
     builder.add(LogicGateProperties.RIGHT_POWERED)
+  }
+
+  override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
+    // TODO fix this being called every tick for some gates
+    val output = logic.update(
+      state[LogicGateProperties.LEFT_POWERED],
+      state[LogicGateProperties.BACK_POWERED],
+      state[LogicGateProperties.RIGHT_POWERED]
+    )
+
+    if (!output && state[LogicGateProperties.OUTPUT_POWERED] == GateOutputState.ON) {
+      world.setBlockState(pos, state.with(LogicGateProperties.OUTPUT_POWERED, GateOutputState.OFF))
+    } else if (output && state[LogicGateProperties.OUTPUT_POWERED] != GateOutputState.ON) {
+      world.setBlockState(pos, state.with(LogicGateProperties.OUTPUT_POWERED, GateOutputState.ON))
+    }
+
+    RedstoneWireUtils.scheduleUpdate(world, pos)
   }
 
   override fun getPartsInBlock(world: World, pos: BlockPos, state: BlockState): Set<PartExt> {
@@ -79,7 +96,7 @@ class GenericLogicGateBlock(settings: AbstractBlock.Settings) : GateBlock(settin
   }
 
   companion object {
-    val SELECTION_BOXES = WireUtils.generateShapes(12 / 16.0)
+    val SELECTION_BOXES = WireUtils.generateShapes(2 / 16.0)
 
     val CULL_BOX = VoxelShapes.union(
       VoxelShapes.cuboid(0.0, 0.0, 0.0, 1.0, 2 / 16.0, 1.0),
@@ -161,25 +178,49 @@ data class LogicGatePartExt(override val side: Direction, val rotation: Int, val
 
   override fun getState(world: World, self: NetNode): Boolean {
     return when (gateSide) {
-      FRONT -> TODO()
-      LEFT -> TODO()
-      BACK -> TODO()
-      RIGHT -> TODO()
+      FRONT -> world.getBlockState(self.data.pos)[LogicGateProperties.OUTPUT_POWERED] != GateOutputState.OFF
+      LEFT -> world.getBlockState(self.data.pos)[LogicGateProperties.LEFT_POWERED] == GateInputState.ON
+      BACK -> world.getBlockState(self.data.pos)[LogicGateProperties.BACK_POWERED] == GateInputState.ON
+      RIGHT -> world.getBlockState(self.data.pos)[LogicGateProperties.RIGHT_POWERED] == GateInputState.ON
     }
   }
 
   override fun setState(world: World, self: NetNode, state: Boolean) {
-    //    val pos = self.data.pos
-    //    val prop = if (top) NullCellProperties.TopPowered else NullCellProperties.BottomPowered
-    //    world.setBlockState(pos, world.getBlockState(pos).with(prop, state))
+    val blockState = world.getBlockState(self.data.pos)
+
+    when (gateSide) {
+      FRONT -> {
+        if (blockState[LogicGateProperties.OUTPUT_POWERED] != GateOutputState.ON) {
+          world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.OUTPUT_POWERED, if (state) GateOutputState.INPUT else GateOutputState.OFF))
+        }
+      }
+      LEFT -> {
+        if (blockState[LogicGateProperties.LEFT_POWERED] != GateInputState.DISABLED) {
+          world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.LEFT_POWERED, if (state) GateInputState.ON else GateInputState.OFF))
+        }
+      }
+      BACK -> {
+        if (blockState[LogicGateProperties.BACK_POWERED] != GateInputState.DISABLED) {
+          world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.BACK_POWERED, if (state) GateInputState.ON else GateInputState.OFF))
+        }
+      }
+      RIGHT -> {
+        if (blockState[LogicGateProperties.RIGHT_POWERED] != GateInputState.DISABLED) {
+          world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.RIGHT_POWERED, if (state) GateInputState.ON else GateInputState.OFF))
+        }
+      }
+    }
+
+    world.blockTickScheduler.schedule(self.data.pos, blockState.block, 1)
   }
 
   override fun getInput(world: World, self: NetNode): Boolean {
-    //    if (gateSide == GateSide.FRONT) {
-    //      return world.getBlockState(self.data.pos)[LogicGateProperties.OutputPowered]
-    //    }
+    val blockState = world.getBlockState(self.data.pos)
 
-    return false
+    return when (gateSide) {
+      FRONT -> blockState[LogicGateProperties.OUTPUT_POWERED] == GateOutputState.ON
+      LEFT, BACK, RIGHT -> false
+    }
   }
 
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
@@ -195,8 +236,8 @@ data class LogicGatePartExt(override val side: Direction, val rotation: Int, val
 
   override fun canConnectAt(world: BlockView, pos: BlockPos, edge: Direction): Boolean {
     val rotation = world.getBlockState(pos)[GateProperties.ROTATION]
-    val axis = adjustRotation(side, rotation, gateSide.direction()).axis
-    return edge.axis == axis
+    val d = adjustRotation(side, rotation, gateSide.direction())
+    return edge == d.opposite
   }
 
   override fun toTag(): Tag {

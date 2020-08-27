@@ -8,8 +8,10 @@ import net.dblsaiko.rswires.MOD_ID
 import net.dblsaiko.rswires.client.render.model.GateModel
 import net.dblsaiko.rswires.common.init.Blocks
 import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider
+import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.model.UnbakedModel
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Identifier
@@ -20,6 +22,8 @@ import java.util.concurrent.ConcurrentHashMap
 object RSWiresClient : ClientModInitializer {
 
   override fun onInitializeClient() {
+    BlockRenderLayerMap.INSTANCE.putBlock(Blocks.AND_GATE, RenderLayer.getCutout())
+
     ModelLoadingRegistry.INSTANCE.registerVariantProvider {
       val modelStore = ConcurrentHashMap<CacheKey, WireModelParts>()
 
@@ -61,9 +65,9 @@ object RSWiresClient : ClientModInitializer {
 
       { state, model ->
         when (state.block) {
-          Blocks.NULL_CELL -> {
+          Blocks.NULL_CELL,
+          Blocks.AND_GATE ->
             map.computeIfAbsent(model, ::GateModel)
-          }
           else -> model
         }
       }

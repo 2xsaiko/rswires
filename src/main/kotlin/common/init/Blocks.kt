@@ -3,9 +3,14 @@ package net.dblsaiko.rswires.common.init
 import net.dblsaiko.hctm.common.util.delegatedNotNull
 import net.dblsaiko.hctm.common.util.flatten
 import net.dblsaiko.rswires.MOD_ID
+import net.dblsaiko.rswires.common.block.AndGateLogic
 import net.dblsaiko.rswires.common.block.BundledCableBlock
+import net.dblsaiko.rswires.common.block.GenericLogicGateBlock
 import net.dblsaiko.rswires.common.block.InsulatedWireBlock
+import net.dblsaiko.rswires.common.block.NandGateLogic
+import net.dblsaiko.rswires.common.block.NorGateLogic
 import net.dblsaiko.rswires.common.block.NullCellBlock
+import net.dblsaiko.rswires.common.block.OrGateLogic
 import net.dblsaiko.rswires.common.block.RedAlloyWireBlock
 import net.fabricmc.fabric.api.block.FabricBlockSettings
 import net.minecraft.block.Block
@@ -36,6 +41,10 @@ object Blocks {
   val COLORED_BUNDLED_CABLES by DyeColor.values().associate { it to create("${it.getName()}_bundled_cable", BundledCableBlock(WIRE_SETTINGS, it)) }.flatten()
 
   val NULL_CELL by create("null_cell", NullCellBlock(GATE_SETTINGS))
+  val AND_GATE by create("and_gate", GenericLogicGateBlock(GATE_SETTINGS, AndGateLogic))
+  val OR_GATE by create("or_gate", GenericLogicGateBlock(GATE_SETTINGS, OrGateLogic))
+  val NAND_GATE by create("nand_gate", GenericLogicGateBlock(GATE_SETTINGS, NandGateLogic))
+  val NOR_GATE by create("nor_gate", GenericLogicGateBlock(GATE_SETTINGS, NorGateLogic))
 
   private fun <T : Block> create(name: String, block: T): ReadOnlyProperty<Blocks, T> {
     var regBlock: T? = null
