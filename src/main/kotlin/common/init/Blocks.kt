@@ -6,7 +6,7 @@ import net.dblsaiko.rswires.MOD_ID
 import net.dblsaiko.rswires.common.block.BundledCableBlock
 import net.dblsaiko.rswires.common.block.InsulatedWireBlock
 import net.dblsaiko.rswires.common.block.RedAlloyWireBlock
-import net.fabricmc.fabric.api.block.FabricBlockSettings
+import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.Material
 import net.minecraft.util.DyeColor
@@ -22,7 +22,6 @@ object Blocks {
     .breakByHand(true)
     .noCollision()
     .strength(0.05f, 0.05f)
-    .build()
 
   val RED_ALLOY_WIRE by create("red_alloy_wire", RedAlloyWireBlock(WIRE_SETTINGS))
   val INSULATED_WIRES by DyeColor.values().associate { it to create("${it.getName()}_insulated_wire", InsulatedWireBlock(WIRE_SETTINGS, it)) }.flatten()
