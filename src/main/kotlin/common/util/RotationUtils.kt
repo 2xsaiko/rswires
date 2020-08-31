@@ -5,6 +5,15 @@ import net.dblsaiko.qcommon.croco.Mat4
 import net.dblsaiko.qcommon.croco.Vec3
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Direction.Axis.X
+import net.minecraft.util.math.Direction.Axis.Y
+import net.minecraft.util.math.Direction.Axis.Z
+import net.minecraft.util.math.Direction.DOWN
+import net.minecraft.util.math.Direction.EAST
+import net.minecraft.util.math.Direction.NORTH
+import net.minecraft.util.math.Direction.SOUTH
+import net.minecraft.util.math.Direction.UP
+import net.minecraft.util.math.Direction.WEST
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.util.shape.VoxelShapes
 import java.util.*
@@ -13,13 +22,18 @@ import java.util.*
  * Convert block face + rotation to a block edge (side is implied).
  */
 fun adjustRotation(side: Direction, rotation: Int, targetOut: Int): Direction {
-  var start = when (side.axis) {
-    Direction.Axis.X, Direction.Axis.Z -> Direction.DOWN
-    Direction.Axis.Y -> Direction.WEST
+  var start = when (side) {
+    DOWN -> WEST
+    UP -> EAST
+    NORTH, SOUTH, WEST, EAST -> UP
   }
 
   repeat((rotation + targetOut) % 4) {
-    start = start.rotateClockwise(side.axis)
+    if (side.direction == Direction.AxisDirection.NEGATIVE) {
+      start = start.rotateClockwise(side.axis)
+    } else {
+      start = start.rotateCounterClockwise(side.axis)
+    }
   }
 
   return start
@@ -29,19 +43,51 @@ fun adjustRotation(side: Direction, rotation: Int, targetOut: Int): Direction {
  * Convert block edge to rotation from 0 to 4 on the specified face.
  */
 fun reverseAdjustRotation(side: Direction, edge: Direction): Int {
-  var start = when (side.axis) {
-    Direction.Axis.X, Direction.Axis.Z -> Direction.DOWN
-    Direction.Axis.Y -> Direction.WEST
+  var start = when (side) {
+    DOWN -> WEST
+    UP -> EAST
+    NORTH, SOUTH, WEST, EAST -> UP
   }
 
   var r = 0
 
   while (start != edge) {
-    start = start.rotateClockwise(side.axis)
+    if (side.direction == Direction.AxisDirection.NEGATIVE) {
+      start = start.rotateClockwise(side.axis)
+    } else {
+      start = start.rotateCounterClockwise(side.axis)
+    }
     r += 1
   }
 
   return r
+}
+
+// TODO move into hctm-base
+fun Direction.rotateCounterClockwise(axis: Direction.Axis): Direction {
+  return when (axis) {
+    X -> when (this) {
+      DOWN -> NORTH
+      UP -> SOUTH
+      NORTH -> UP
+      SOUTH -> DOWN
+      else -> this
+    }
+    Y -> when (this) {
+      NORTH -> WEST
+      SOUTH -> EAST
+      WEST -> SOUTH
+      EAST -> NORTH
+      else -> this
+    }
+    Z -> when (this) {
+      DOWN -> EAST
+      UP -> WEST
+      WEST -> DOWN
+      EAST -> UP
+      else -> this
+    }
+  }
 }
 
 private val matrixMap = Direction.values().asIterable().associateWith { face ->

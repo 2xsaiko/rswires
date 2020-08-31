@@ -150,9 +150,9 @@ enum class GateSide {
   fun direction(): Int {
     return when (this) {
       FRONT -> 0
-      LEFT -> 1
+      RIGHT -> 1
       BACK -> 2
-      RIGHT -> 3
+      LEFT -> 3
     }
   }
 
@@ -160,9 +160,9 @@ enum class GateSide {
     fun fromEdge(rotation: Int, targetOut: Int): GateSide {
       return when ((rotation + targetOut) % 4) {
         0 -> FRONT
-        1 -> LEFT
+        1 -> RIGHT
         2 -> BACK
-        3 -> RIGHT
+        3 -> LEFT
         else -> error("unreachable")
       }
     }
