@@ -98,13 +98,10 @@ class GenericLogicGateBlock(settings: AbstractBlock.Settings, private val logic:
   companion object {
     val SELECTION_BOXES = WireUtils.generateShapes(2 / 16.0)
 
-    val CULL_BOX = VoxelShapes.union(
-      VoxelShapes.cuboid(0.0, 0.0, 0.0, 1.0, 2 / 16.0, 1.0),
-      VoxelShapes.cuboid(7 / 16.0, 0.0, 0.0, 9 / 16.0, 12 / 16.0, 1.0),
-      VoxelShapes.cuboid(0.0, 0.0, 7 / 16.0, 1.0, 3 / 16.0, 9 / 16.0)
-    ).let { box ->
-      Direction.values().asIterable().associateWith { face -> Array(4) { rotation -> box.rotate(face, rotation) } }
-    }.let(::EnumMap)
+    val CULL_BOX =
+      VoxelShapes.cuboid(0.0, 0.0, 0.0, 1.0, 2 / 16.0, 1.0).let { box ->
+        Direction.values().asIterable().associateWith { face -> Array(4) { rotation -> box.rotate(face, rotation) } }
+      }.let(::EnumMap)
   }
 
 }

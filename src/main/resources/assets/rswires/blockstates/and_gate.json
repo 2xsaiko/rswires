@@ -40,15 +40,11 @@
       "apply": { "model": "rswires:block/and_gate_right_off", "y": 90 }
     },
     {
-      "when": { "output": "off" },
+      "when": { "output": "off|input" },
       "apply": { "model": "rswires:block/and_gate_output_off", "y": 90 }
     },
     {
       "when": { "output": "on" },
-      "apply": { "model": "rswires:block/and_gate_output_on", "y": 90 }
-    },
-    {
-      "when": { "output": "input" },
       "apply": { "model": "rswires:block/and_gate_output_on", "y": 90 }
     }
   ]
