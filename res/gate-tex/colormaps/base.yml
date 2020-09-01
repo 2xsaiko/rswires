@@ -1,0 +1,8 @@
+- color: "#000000"
+  image: background.png
+- color: "#4c4c4c"
+  fallback: true
+  image: background.png
+  filters:
+    - type: multiply
+      color: "#e0e0e0"

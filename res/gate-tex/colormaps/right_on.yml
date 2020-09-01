@@ -1,0 +1,4 @@
+- color: "#ffff00"
+  fill: "#d10000"
+- fallback: true
+  fill: transparent
