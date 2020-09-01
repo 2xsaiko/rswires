@@ -22,7 +22,11 @@ import java.util.concurrent.ConcurrentHashMap
 object RSWiresClient : ClientModInitializer {
 
   override fun onInitializeClient() {
-    BlockRenderLayerMap.INSTANCE.putBlock(Blocks.AND_GATE, RenderLayer.getCutout())
+    BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
+      Blocks.AND_GATE,
+      Blocks.OR_GATE,
+      Blocks.NAND_GATE,
+      Blocks.NOR_GATE)
 
     ModelLoadingRegistry.INSTANCE.registerVariantProvider {
       val modelStore = ConcurrentHashMap<CacheKey, WireModelParts>()
@@ -66,7 +70,10 @@ object RSWiresClient : ClientModInitializer {
       { state, model ->
         when (state.block) {
           Blocks.NULL_CELL,
-          Blocks.AND_GATE ->
+          Blocks.AND_GATE,
+          Blocks.OR_GATE,
+          Blocks.NAND_GATE,
+          Blocks.NOR_GATE ->
             map.computeIfAbsent(model, ::GateModel)
           else -> model
         }

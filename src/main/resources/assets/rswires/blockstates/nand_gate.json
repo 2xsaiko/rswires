@@ -1,0 +1,51 @@
+{
+  "multipart": [
+    {
+      "apply": { "model": "rswires:block/nand_gate_base", "y": 90 }
+    },
+    {
+      "when": { "back": "off" },
+      "apply": { "model": "rswires:block/nand_gate_back_off", "y": 90 }
+    },
+    {
+      "when": { "back": "on" },
+      "apply": { "model": "rswires:block/nand_gate_back_on", "y": 90 }
+    },
+    {
+      "when": { "back": "disabled" },
+      "apply": { "model": "rswires:block/nand_gate_back_off", "y": 90 }
+    },
+    {
+      "when": { "left": "off" },
+      "apply": { "model": "rswires:block/nand_gate_left_off", "y": 90 }
+    },
+    {
+      "when": { "left": "on" },
+      "apply": { "model": "rswires:block/nand_gate_left_on", "y": 90 }
+    },
+    {
+      "when": { "left": "disabled" },
+      "apply": { "model": "rswires:block/nand_gate_left_off", "y": 90 }
+    },
+    {
+      "when": { "right": "off" },
+      "apply": { "model": "rswires:block/nand_gate_right_off", "y": 90 }
+    },
+    {
+      "when": { "right": "on" },
+      "apply": { "model": "rswires:block/nand_gate_right_on", "y": 90 }
+    },
+    {
+      "when": { "right": "disabled" },
+      "apply": { "model": "rswires:block/nand_gate_right_off", "y": 90 }
+    },
+    {
+      "when": { "output": "off" },
+      "apply": { "model": "rswires:block/nand_gate_output_off", "y": 90 }
+    },
+    {
+      "when": { "output": "on|input" },
+      "apply": { "model": "rswires:block/nand_gate_output_on", "y": 90 }
+    }
+  ]
+}
