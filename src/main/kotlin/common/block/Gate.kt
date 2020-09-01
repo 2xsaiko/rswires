@@ -8,6 +8,7 @@ import net.dblsaiko.rswires.common.util.reverseAdjustRotation
 import net.minecraft.block.AbstractBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
+import net.minecraft.block.Blocks
 import net.minecraft.block.ShapeContext
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemPlacementContext
@@ -29,6 +30,7 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
+import net.minecraft.world.WorldView
 
 abstract class GateBlock(settings: AbstractBlock.Settings) : Block(settings), BlockPartProvider {
 
@@ -62,7 +64,13 @@ abstract class GateBlock(settings: AbstractBlock.Settings) : Block(settings), Bl
   fun getSide(state: BlockState) = state[Properties.FACING]
 
   override fun getStateForNeighborUpdate(state: BlockState, facing: Direction, neighborState: BlockState, world: WorldAccess, pos: BlockPos, neighborPos: BlockPos): BlockState {
-    return super.getStateForNeighborUpdate(state, facing, neighborState, world, pos, neighborPos)
+    return if (state.canPlaceAt(world, pos)) state else Blocks.AIR.defaultState
+  }
+
+  override fun canPlaceAt(state: BlockState, world: WorldView, pos: BlockPos): Boolean {
+    val dir = state[Properties.FACING]
+    val neighborPos = pos.offset(dir)
+    return world.getBlockState(neighborPos).isSideSolidFullSquare(world, neighborPos, dir.opposite)
   }
 
   override fun calcBlockBreakingDelta(state: BlockState, player: PlayerEntity, world: BlockView, pos: BlockPos): Float {
