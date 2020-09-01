@@ -42,6 +42,12 @@ class NullCellBlock(settings: AbstractBlock.Settings) : GateBlock(settings) {
     builder.add(NullCellProperties.TOP_POWERED)
   }
 
+  override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos, block: Block, neighborPos: BlockPos, moved: Boolean) {
+    if (world is ServerWorld) {
+      RedstoneWireUtils.scheduleUpdate(world, pos)
+    }
+  }
+
   override fun getPartsInBlock(world: World, pos: BlockPos, state: BlockState): Set<PartExt> {
     val side = getSide(state)
     val rotation = state[GateProperties.ROTATION]
@@ -99,7 +105,10 @@ data class NullCellPartExt(override val side: Direction, val rotation: Int, val 
   }
 
   override fun getInput(world: World, self: NetNode): Boolean {
-    return false
+    val d = adjustRotation(side, rotation, if (top) 1 else 0)
+    return setOf(d, d.opposite).any {
+      world.getEmittedRedstonePower(self.data.pos.offset(it), it) != 0
+    }
   }
 
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {

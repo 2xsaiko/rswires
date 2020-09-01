@@ -51,6 +51,12 @@ class GenericLogicGateBlock(settings: AbstractBlock.Settings, private val logic:
     builder.add(LogicGateProperties.RIGHT_POWERED)
   }
 
+  override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos, block: Block, neighborPos: BlockPos, moved: Boolean) {
+    if (world is ServerWorld) {
+      RedstoneWireUtils.scheduleUpdate(world, pos)
+    }
+  }
+
   override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
     val output = logic.update(
       state[LogicGateProperties.LEFT_POWERED],
@@ -216,7 +222,7 @@ data class LogicGatePartExt(override val side: Direction, val rotation: Int, val
     return when (gateSide) {
       FRONT -> blockState[LogicGateProperties.OUTPUT_POWERED] == GateOutputState.ON
       LEFT, BACK, RIGHT -> {
-        val d = adjustRotation(side, rotation, gateSide.direction())
+        val d = adjustRotation(side, rotation, gateSide.direction()).opposite
         world.getEmittedRedstonePower(self.data.pos.offset(d), d) != 0
       }
     }
