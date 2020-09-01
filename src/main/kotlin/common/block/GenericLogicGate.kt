@@ -52,7 +52,6 @@ class GenericLogicGateBlock(settings: AbstractBlock.Settings, private val logic:
   }
 
   override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
-    // TODO fix this being called every tick for some gates
     val output = logic.update(
       state[LogicGateProperties.LEFT_POWERED],
       state[LogicGateProperties.BACK_POWERED],
@@ -61,11 +60,11 @@ class GenericLogicGateBlock(settings: AbstractBlock.Settings, private val logic:
 
     if (!output && state[LogicGateProperties.OUTPUT_POWERED] == GateOutputState.ON) {
       world.setBlockState(pos, state.with(LogicGateProperties.OUTPUT_POWERED, GateOutputState.OFF))
+      RedstoneWireUtils.scheduleUpdate(world, pos)
     } else if (output && state[LogicGateProperties.OUTPUT_POWERED] != GateOutputState.ON) {
       world.setBlockState(pos, state.with(LogicGateProperties.OUTPUT_POWERED, GateOutputState.ON))
+      RedstoneWireUtils.scheduleUpdate(world, pos)
     }
-
-    RedstoneWireUtils.scheduleUpdate(world, pos)
   }
 
   override fun getPartsInBlock(world: World, pos: BlockPos, state: BlockState): Set<PartExt> {
@@ -73,9 +72,9 @@ class GenericLogicGateBlock(settings: AbstractBlock.Settings, private val logic:
     val rotation = state[GateProperties.ROTATION]
     return setOf(
       LogicGatePartExt(side, rotation, GateSide.FRONT),
-      LogicGatePartExt(side, (rotation + 1) % 4, GateSide.LEFT),
-      LogicGatePartExt(side, (rotation + 2) % 4, GateSide.BACK),
-      LogicGatePartExt(side, (rotation + 3) % 4, GateSide.RIGHT)
+      LogicGatePartExt(side, rotation, GateSide.LEFT),
+      LogicGatePartExt(side, rotation, GateSide.BACK),
+      LogicGatePartExt(side, rotation, GateSide.RIGHT)
     )
   }
 
@@ -216,12 +215,14 @@ data class LogicGatePartExt(override val side: Direction, val rotation: Int, val
 
     return when (gateSide) {
       FRONT -> blockState[LogicGateProperties.OUTPUT_POWERED] == GateOutputState.ON
-      LEFT, BACK, RIGHT -> false
+      LEFT, BACK, RIGHT -> {
+        val d = adjustRotation(side, rotation, gateSide.direction())
+        world.getEmittedRedstonePower(self.data.pos.offset(d), d) != 0
+      }
     }
   }
 
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
-    val rotation = world.getBlockState(pos)[GateProperties.ROTATION]
     val direction = adjustRotation(side, rotation, gateSide.direction())
     return find(ConnectionDiscoverers.WIRE, RedstoneCarrierFilter and ConnectionFilter { self, other ->
       self.data.pos.subtract(other.data.pos)
@@ -232,7 +233,6 @@ data class LogicGatePartExt(override val side: Direction, val rotation: Int, val
   }
 
   override fun canConnectAt(world: BlockView, pos: BlockPos, edge: Direction): Boolean {
-    val rotation = world.getBlockState(pos)[GateProperties.ROTATION]
     val d = adjustRotation(side, rotation, gateSide.direction())
     return edge == d.opposite
   }
