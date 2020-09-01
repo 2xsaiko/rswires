@@ -1,0 +1,66 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "torch": "minecraft:block/redstone_torch_off",
+    "torch1": "minecraft:block/redstone_torch",
+    "wire": "rswires:block/or_gate/output_on"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 2, 16],
+      "faces": {
+        "up": { "uv": [0, 0, 16, 16], "texture": "#wire" }
+      }
+    },
+    {
+      "from": [6, 2, 2],
+      "to": [10, 9, 4],
+      "faces": {
+        "north": { "uv": [6, 5, 10, 12], "texture": "#torch" },
+        "south": { "uv": [6, 5, 10, 12], "texture": "#torch" }
+      }
+    },
+    {
+      "from": [7, 2, 1],
+      "to": [9, 9, 5],
+      "faces": {
+        "east": { "uv": [6, 5, 10, 12], "texture": "#torch" },
+        "west": { "uv": [6, 5, 10, 12], "texture": "#torch" }
+      }
+    },
+    {
+      "from": [7, 2, 2],
+      "to": [9, 8, 4],
+      "faces": {
+        "up": { "uv": [7, 6, 9, 8], "texture": "#torch" }
+      }
+    },
+    {
+      "from": [6, 2, 7],
+      "to": [10, 7, 9],
+      "rotation": { "angle": 0, "axis": "y", "origin": [8, 8, 13] },
+      "faces": {
+        "north": { "uv": [6, 5, 10, 11], "texture": "#torch1" },
+        "south": { "uv": [6, 5, 10, 10], "texture": "#torch1" }
+      }
+    },
+    {
+      "from": [7, 2, 6],
+      "to": [9, 7, 10],
+      "rotation": { "angle": 0, "axis": "y", "origin": [8, 8, 13] },
+      "faces": {
+        "east": { "uv": [6, 5, 10, 10], "texture": "#torch1" },
+        "west": { "uv": [6, 5, 10, 10], "texture": "#torch1" }
+      }
+    },
+    {
+      "from": [7, 2, 7],
+      "to": [9, 6, 9],
+      "rotation": { "angle": 0, "axis": "y", "origin": [8, 8, 13] },
+      "faces": {
+        "up": { "uv": [7, 6, 9, 8], "texture": "#torch1" }
+      }
+    }
+  ]
+}
