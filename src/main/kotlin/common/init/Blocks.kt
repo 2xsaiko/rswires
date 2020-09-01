@@ -12,6 +12,8 @@ import net.dblsaiko.rswires.common.block.NorGateLogic
 import net.dblsaiko.rswires.common.block.NullCellBlock
 import net.dblsaiko.rswires.common.block.OrGateLogic
 import net.dblsaiko.rswires.common.block.RedAlloyWireBlock
+import net.dblsaiko.rswires.common.block.XnorGateLogic
+import net.dblsaiko.rswires.common.block.XorGateLogic
 import net.fabricmc.fabric.api.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.Material
@@ -41,10 +43,12 @@ object Blocks {
   val COLORED_BUNDLED_CABLES by DyeColor.values().associate { it to create("${it.getName()}_bundled_cable", BundledCableBlock(WIRE_SETTINGS, it)) }.flatten()
 
   val NULL_CELL by create("null_cell", NullCellBlock(GATE_SETTINGS))
-  val AND_GATE by create("and_gate", GenericLogicGateBlock(GATE_SETTINGS, AndGateLogic))
-  val OR_GATE by create("or_gate", GenericLogicGateBlock(GATE_SETTINGS, OrGateLogic))
-  val NAND_GATE by create("nand_gate", GenericLogicGateBlock(GATE_SETTINGS, NandGateLogic))
-  val NOR_GATE by create("nor_gate", GenericLogicGateBlock(GATE_SETTINGS, NorGateLogic))
+  val AND_GATE by create("and_gate", GenericLogicGateBlock.create(GATE_SETTINGS, AndGateLogic))
+  val OR_GATE by create("or_gate", GenericLogicGateBlock.create(GATE_SETTINGS, OrGateLogic))
+  val NAND_GATE by create("nand_gate", GenericLogicGateBlock.create(GATE_SETTINGS, NandGateLogic))
+  val NOR_GATE by create("nor_gate", GenericLogicGateBlock.create(GATE_SETTINGS, NorGateLogic))
+  val XOR_GATE by create("xor_gate", GenericLogicGateBlock.create(GATE_SETTINGS, XorGateLogic))
+  val XNOR_GATE by create("xnor_gate", GenericLogicGateBlock.create(GATE_SETTINGS, XnorGateLogic))
 
   private fun <T : Block> create(name: String, block: T): ReadOnlyProperty<Blocks, T> {
     var regBlock: T? = null

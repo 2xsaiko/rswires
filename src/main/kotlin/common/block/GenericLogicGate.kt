@@ -8,6 +8,9 @@ import net.dblsaiko.hctm.common.wire.NodeView
 import net.dblsaiko.hctm.common.wire.PartExt
 import net.dblsaiko.hctm.common.wire.WirePartExtType
 import net.dblsaiko.hctm.common.wire.find
+import net.dblsaiko.rswires.common.block.GateInputState.DISABLED
+import net.dblsaiko.rswires.common.block.GateInputState.OFF
+import net.dblsaiko.rswires.common.block.GateInputState.ON
 import net.dblsaiko.rswires.common.block.GateSide.BACK
 import net.dblsaiko.rswires.common.block.GateSide.FRONT
 import net.dblsaiko.rswires.common.block.GateSide.LEFT
@@ -33,22 +36,35 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import java.util.*
 
-class GenericLogicGateBlock(settings: AbstractBlock.Settings, private val logic: GateLogic) : GateBlock(settings) {
+class GenericLogicGateBlock private constructor(settings: AbstractBlock.Settings, val logic: GateLogic) : GateBlock(settings) {
 
   init {
-    defaultState = defaultState
-      .with(LogicGateProperties.OUTPUT_POWERED, GateOutputState.OFF)
-      .with(LogicGateProperties.LEFT_POWERED, GateInputState.OFF)
-      .with(LogicGateProperties.BACK_POWERED, GateInputState.OFF)
-      .with(LogicGateProperties.RIGHT_POWERED, GateInputState.OFF)
+    val defaultOutput = if (logic.update(GateInputState.OFF, GateInputState.OFF, GateInputState.OFF))
+      GateOutputState.ON else GateOutputState.OFF
+
+    var newDefaultState = defaultState
+      .with(LogicGateProperties.OUTPUT_POWERED, defaultOutput)
+    if (logic.hasLeftInput()) {
+      newDefaultState = newDefaultState.with(LogicGateProperties.LEFT_POWERED, GateInputState.OFF)
+    }
+    if (logic.hasBackInput()) {
+      newDefaultState = newDefaultState.with(LogicGateProperties.BACK_POWERED, GateInputState.OFF)
+    }
+    if (logic.hasRightInput()) {
+      newDefaultState = newDefaultState.with(LogicGateProperties.RIGHT_POWERED, GateInputState.OFF)
+    }
+
+    defaultState = newDefaultState
+    tempLogic = null
   }
 
   override fun appendProperties(builder: Builder<Block, BlockState>) {
     super.appendProperties(builder)
     builder.add(LogicGateProperties.OUTPUT_POWERED)
-    builder.add(LogicGateProperties.LEFT_POWERED)
-    builder.add(LogicGateProperties.BACK_POWERED)
-    builder.add(LogicGateProperties.RIGHT_POWERED)
+    val logic = tempLogic ?: error("tempLogic is null? Either a race condition or block was not constructed using create()")
+    if (logic.hasLeftInput()) builder.add(LogicGateProperties.LEFT_POWERED)
+    if (logic.hasBackInput()) builder.add(LogicGateProperties.BACK_POWERED)
+    if (logic.hasRightInput()) builder.add(LogicGateProperties.RIGHT_POWERED)
   }
 
   override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos, block: Block, neighborPos: BlockPos, moved: Boolean) {
@@ -58,10 +74,7 @@ class GenericLogicGateBlock(settings: AbstractBlock.Settings, private val logic:
   }
 
   override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random) {
-    val output = logic.update(
-      state[LogicGateProperties.LEFT_POWERED],
-      state[LogicGateProperties.BACK_POWERED],
-      state[LogicGateProperties.RIGHT_POWERED]
+    val output = logic.update(state.getLeftInput(), state.getBackInput(), state.getRightInput()
     )
 
     if (!output && state[LogicGateProperties.OUTPUT_POWERED] == GateOutputState.ON) {
@@ -76,12 +89,12 @@ class GenericLogicGateBlock(settings: AbstractBlock.Settings, private val logic:
   override fun getPartsInBlock(world: World, pos: BlockPos, state: BlockState): Set<PartExt> {
     val side = getSide(state)
     val rotation = state[GateProperties.ROTATION]
-    return setOf(
-      LogicGatePartExt(side, rotation, GateSide.FRONT),
-      LogicGatePartExt(side, rotation, GateSide.LEFT),
-      LogicGatePartExt(side, rotation, GateSide.BACK),
-      LogicGatePartExt(side, rotation, GateSide.RIGHT)
-    )
+    val parts = mutableSetOf<LogicGatePartExt>()
+    parts += LogicGatePartExt(side, rotation, GateSide.FRONT)
+    if (logic.hasLeftInput()) parts += LogicGatePartExt(side, rotation, GateSide.LEFT)
+    if (logic.hasBackInput()) parts += LogicGatePartExt(side, rotation, GateSide.BACK)
+    if (logic.hasRightInput()) parts += LogicGatePartExt(side, rotation, GateSide.RIGHT)
+    return parts
   }
 
   override fun createExtFromTag(tag: Tag): PartExt? {
@@ -100,7 +113,45 @@ class GenericLogicGateBlock(settings: AbstractBlock.Settings, private val logic:
     return CULL_BOX.getValue(state[Properties.FACING])[state[GateProperties.ROTATION]]
   }
 
+  fun BlockState.getLeftInput(): GateInputState =
+    if (logic.hasLeftInput()) this[LogicGateProperties.LEFT_POWERED]
+    else GateInputState.DISABLED
+
+  fun BlockState.getBackInput(): GateInputState =
+    if (logic.hasBackInput()) this[LogicGateProperties.BACK_POWERED]
+    else GateInputState.DISABLED
+
+  fun BlockState.getRightInput(): GateInputState =
+    if (logic.hasRightInput()) this[LogicGateProperties.RIGHT_POWERED]
+    else GateInputState.DISABLED
+
+  fun BlockState.getLeftInput(fallback: Boolean) = when (this.getLeftInput()) {
+    OFF -> false
+    ON -> true
+    DISABLED -> fallback
+  }
+
+  fun BlockState.getBackInput(fallback: Boolean) = when (this.getBackInput()) {
+    OFF -> false
+    ON -> true
+    DISABLED -> fallback
+  }
+
+  fun BlockState.getRightInput(fallback: Boolean) = when (this.getRightInput()) {
+    OFF -> false
+    ON -> true
+    DISABLED -> fallback
+  }
+
   companion object {
+    private var tempLogic: GateLogic? = null
+
+    @JvmStatic
+    fun create(settings: AbstractBlock.Settings, logic: GateLogic): GenericLogicGateBlock {
+      tempLogic = logic
+      return GenericLogicGateBlock(settings, logic)
+    }
+
     val SELECTION_BOXES = WireUtils.generateShapes(2 / 16.0)
 
     val CULL_BOX =
@@ -179,36 +230,41 @@ data class LogicGatePartExt(override val side: Direction, val rotation: Int, val
   override val type = RedstoneWireType.RedAlloy
 
   override fun getState(world: World, self: NetNode): Boolean {
-    return when (gateSide) {
-      FRONT -> world.getBlockState(self.data.pos)[LogicGateProperties.OUTPUT_POWERED] != GateOutputState.OFF
-      LEFT -> world.getBlockState(self.data.pos)[LogicGateProperties.LEFT_POWERED] == GateInputState.ON
-      BACK -> world.getBlockState(self.data.pos)[LogicGateProperties.BACK_POWERED] == GateInputState.ON
-      RIGHT -> world.getBlockState(self.data.pos)[LogicGateProperties.RIGHT_POWERED] == GateInputState.ON
+    val state = world.getBlockState(self.data.pos)
+    with(state.block as GenericLogicGateBlock) {
+      return when (gateSide) {
+        FRONT -> state[LogicGateProperties.OUTPUT_POWERED] != GateOutputState.OFF
+        LEFT -> state.getLeftInput(false)
+        BACK -> state.getBackInput(false)
+        RIGHT -> state.getRightInput(false)
+      }
     }
   }
 
   override fun setState(world: World, self: NetNode, state: Boolean) {
     val blockState = world.getBlockState(self.data.pos)
 
-    when (gateSide) {
-      FRONT -> {
-        if (blockState[LogicGateProperties.OUTPUT_POWERED] != GateOutputState.ON) {
-          world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.OUTPUT_POWERED, if (state) GateOutputState.INPUT else GateOutputState.OFF))
+    with (blockState.block as GenericLogicGateBlock) {
+      when (gateSide) {
+        FRONT -> {
+          if (blockState[LogicGateProperties.OUTPUT_POWERED] != GateOutputState.ON) {
+            world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.OUTPUT_POWERED, if (state) GateOutputState.INPUT else GateOutputState.OFF))
+          }
         }
-      }
-      LEFT -> {
-        if (blockState[LogicGateProperties.LEFT_POWERED] != GateInputState.DISABLED) {
-          world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.LEFT_POWERED, if (state) GateInputState.ON else GateInputState.OFF))
+        LEFT -> {
+          if (logic.hasLeftInput() && blockState.getLeftInput() != GateInputState.DISABLED) {
+            world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.LEFT_POWERED, if (state) GateInputState.ON else GateInputState.OFF))
+          }
         }
-      }
-      BACK -> {
-        if (blockState[LogicGateProperties.BACK_POWERED] != GateInputState.DISABLED) {
-          world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.BACK_POWERED, if (state) GateInputState.ON else GateInputState.OFF))
+        BACK -> {
+          if (logic.hasBackInput() && blockState.getBackInput() != GateInputState.DISABLED) {
+            world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.BACK_POWERED, if (state) GateInputState.ON else GateInputState.OFF))
+          }
         }
-      }
-      RIGHT -> {
-        if (blockState[LogicGateProperties.RIGHT_POWERED] != GateInputState.DISABLED) {
-          world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.RIGHT_POWERED, if (state) GateInputState.ON else GateInputState.OFF))
+        RIGHT -> {
+          if (logic.hasRightInput() && blockState.getRightInput() != GateInputState.DISABLED) {
+            world.setBlockState(self.data.pos, blockState.with(LogicGateProperties.RIGHT_POWERED, if (state) GateInputState.ON else GateInputState.OFF))
+          }
         }
       }
     }
@@ -241,6 +297,10 @@ data class LogicGatePartExt(override val side: Direction, val rotation: Int, val
   override fun canConnectAt(world: BlockView, pos: BlockPos, edge: Direction): Boolean {
     val d = adjustRotation(side, rotation, gateSide.direction())
     return edge == d.opposite
+  }
+
+  override fun onChanged(self: NetNode, world: ServerWorld, pos: BlockPos) {
+    RedstoneWireUtils.scheduleUpdate(world, pos)
   }
 
   override fun toTag(): Tag {

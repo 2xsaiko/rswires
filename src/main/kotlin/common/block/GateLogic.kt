@@ -4,6 +4,12 @@ interface GateLogic {
 
   fun update(left: GateInputState, back: GateInputState, right: GateInputState): Boolean
 
+  fun hasLeftInput() = true
+
+  fun hasRightInput() = true
+
+  fun hasBackInput() = true
+
 }
 
 object AndGateLogic : GateLogic {
@@ -35,5 +41,25 @@ object NorGateLogic : GateLogic {
   override fun update(left: GateInputState, back: GateInputState, right: GateInputState): Boolean {
     return !(left == GateInputState.ON || back == GateInputState.ON || right == GateInputState.ON)
   }
+
+}
+
+object XorGateLogic : GateLogic {
+
+  override fun update(left: GateInputState, back: GateInputState, right: GateInputState): Boolean {
+    return (left == GateInputState.ON) != (right == GateInputState.ON)
+  }
+
+  override fun hasBackInput() = false
+
+}
+
+object XnorGateLogic : GateLogic {
+
+  override fun update(left: GateInputState, back: GateInputState, right: GateInputState): Boolean {
+    return (left == GateInputState.ON) == (right == GateInputState.ON)
+  }
+
+  override fun hasBackInput() = false
 
 }

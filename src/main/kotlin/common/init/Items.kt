@@ -29,6 +29,8 @@ object Items {
   val OR_GATE by create("or_gate", BlockItem(Blocks.OR_GATE, SETTINGS))
   val NAND_GATE by create("nand_gate", BlockItem(Blocks.NAND_GATE, SETTINGS))
   val NOR_GATE by create("nor_gate", BlockItem(Blocks.NOR_GATE, SETTINGS))
+  val XOR_GATE by create("xor_gate", BlockItem(Blocks.XOR_GATE, SETTINGS))
+  val XNOR_GATE by create("xnor_gate", BlockItem(Blocks.XNOR_GATE, SETTINGS))
 
   val RED_ALLOY_COMPOUND by create("red_alloy_compound", Item(SETTINGS))
   val RED_ALLOY_INGOT by create("red_alloy_ingot", Item(SETTINGS))
