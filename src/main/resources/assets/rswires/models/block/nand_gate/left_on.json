@@ -1,42 +1,7 @@
 {
-  "parent": "block/block",
+  "parent": "rswires:block/nand_gate/left",
   "textures": {
     "torch": "minecraft:block/redstone_torch_off",
     "wire": "rswires:block/nand_gate/left_on"
-  },
-  "elements": [
-    {
-      "from": [0, 0, 0],
-      "to": [16, 2, 16],
-      "faces": {
-        "up": { "uv": [0, 0, 16, 16], "texture": "#wire" }
-      }
-    },
-    {
-      "from": [2.5, 2, 7],
-      "to": [6.5, 7, 9],
-      "rotation": { "angle": 0, "axis": "y", "origin": [4.5, 8, 13] },
-      "faces": {
-        "north": { "uv": [6, 5, 10, 11], "texture": "#torch" },
-        "south": { "uv": [6, 5, 10, 10], "texture": "#torch" }
-      }
-    },
-    {
-      "from": [3.5, 2, 6],
-      "to": [5.5, 7, 10],
-      "rotation": { "angle": 0, "axis": "y", "origin": [4.5, 8, 13] },
-      "faces": {
-        "east": { "uv": [6, 5, 10, 10], "texture": "#torch" },
-        "west": { "uv": [6, 5, 10, 10], "texture": "#torch" }
-      }
-    },
-    {
-      "from": [3.5, 2, 7],
-      "to": [5.5, 6, 9],
-      "rotation": { "angle": 0, "axis": "y", "origin": [4.5, 8, 13] },
-      "faces": {
-        "up": { "uv": [7, 6, 9, 8], "texture": "#torch" }
-      }
-    }
-  ]
+  }
 }

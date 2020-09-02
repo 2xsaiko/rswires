@@ -1,15 +1,6 @@
 {
-  "parent": "block/block",
+  "parent": "rswires:block/nand_gate/output",
   "textures": {
     "wire": "rswires:block/nand_gate/output_off"
-  },
-  "elements": [
-    {
-      "from": [0, 0, 0],
-      "to": [16, 2, 16],
-      "faces": {
-        "up": { "uv": [0, 0, 16, 16], "texture": "#wire" }
-      }
-    }
-  ]
+  }
 }
