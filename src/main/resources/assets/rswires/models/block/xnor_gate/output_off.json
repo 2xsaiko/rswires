@@ -1,0 +1,7 @@
+{
+  "parent": "rswires:block/xnor_gate/output",
+  "textures": {
+    "torch": "minecraft:block/redstone_torch_off",
+    "wire": "rswires:block/xnor_gate/output_on"
+  }
+}

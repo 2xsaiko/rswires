@@ -1,0 +1,78 @@
+{
+  "multipart": [
+    {
+      "apply": { "model": "rswires:block/xnor_gate/base", "y": 90 }
+    },
+    {
+      "when": { "left": "off", "right": "off" },
+      "apply": { "model": "rswires:block/xnor_gate/alt1_on", "y": 90 }
+    },
+    {
+      "when": {
+        "OR": [
+          { "left": "off", "right": "on" },
+          { "left": "on", "right": "off|on" }
+        ]
+      },
+      "apply": { "model": "rswires:block/xnor_gate/alt1_off", "y": 90 }
+    },
+    {
+      "when": { "right": "on", "left": "off" },
+      "apply": { "model": "rswires:block/xnor_gate/left_torch_on", "y": 90 }
+    },
+    {
+      "when": {
+        "OR": [
+          { "right": "off", "left": "off" },
+          { "right": "off|on", "left": "on" }
+        ]
+      },
+      "apply": { "model": "rswires:block/xnor_gate/left_torch_off", "y": 90 }
+    },
+    {
+      "when": { "left": "on", "right": "off" },
+      "apply": { "model": "rswires:block/xnor_gate/right_torch_on", "y": 90 }
+    },
+    {
+      "when": {
+        "OR": [
+          { "left": "off", "right": "off" },
+          { "left": "off|on", "right": "on" }
+        ]
+      },
+      "apply": { "model": "rswires:block/xnor_gate/right_torch_off", "y": 90 }
+    },
+    {
+      "when": { "left": "off" },
+      "apply": { "model": "rswires:block/xnor_gate/left_off", "y": 90 }
+    },
+    {
+      "when": { "left": "on" },
+      "apply": { "model": "rswires:block/xnor_gate/left_on", "y": 90 }
+    },
+    {
+      "when": { "left": "disabled" },
+      "apply": { "model": "rswires:block/xnor_gate/left_off", "y": 90 }
+    },
+    {
+      "when": { "right": "off" },
+      "apply": { "model": "rswires:block/xnor_gate/right_off", "y": 90 }
+    },
+    {
+      "when": { "right": "on" },
+      "apply": { "model": "rswires:block/xnor_gate/right_on", "y": 90 }
+    },
+    {
+      "when": { "right": "disabled" },
+      "apply": { "model": "rswires:block/xnor_gate/right_off", "y": 90 }
+    },
+    {
+      "when": { "output": "off" },
+      "apply": { "model": "rswires:block/xnor_gate/output_off", "y": 90 }
+    },
+    {
+      "when": { "output": "on|input" },
+      "apply": { "model": "rswires:block/xnor_gate/output_on", "y": 90 }
+    }
+  ]
+}

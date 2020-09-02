@@ -1,0 +1,6 @@
+{
+  "parent": "rswires:block/xnor_gate/right_torch",
+  "textures": {
+    "torch": "minecraft:block/redstone_torch_off"
+  }
+}
