@@ -35,8 +35,8 @@ $(call gate_template, and_gate, $(templates_all))
 $(call gate_template, or_gate, $(templates_all))
 $(call gate_template, nand_gate, $(templates_all))
 $(call gate_template, nor_gate, $(templates_all))
-$(call gate_template, xor_gate, $(t_base) $(t_left) $(t_right) $(t_alt1))
-$(call gate_template, xnor_gate, $(t_base) $(t_left) $(t_right) $(t_alt1))
+$(call gate_template, xor_gate, $(t_base) $(t_left) $(t_right) $(t_alt1) $(t_output))
+$(call gate_template, xnor_gate, $(t_base) $(t_left) $(t_right) $(t_alt1) $(t_output))
 
 all: $(targets)
 

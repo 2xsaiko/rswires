@@ -1,0 +1,6 @@
+{
+  "parent": "rswires:block/xor_gate/left",
+  "textures": {
+    "wire": "rswires:block/xor_gate/left_off"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "rswires:block/xor_gate/output",
+  "textures": {
+    "wire": "rswires:block/xor_gate/output_off"
+  }
+}

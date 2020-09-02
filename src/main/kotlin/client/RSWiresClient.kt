@@ -26,7 +26,9 @@ object RSWiresClient : ClientModInitializer {
       Blocks.AND_GATE,
       Blocks.OR_GATE,
       Blocks.NAND_GATE,
-      Blocks.NOR_GATE)
+      Blocks.NOR_GATE,
+      Blocks.XOR_GATE,
+      Blocks.XNOR_GATE)
 
     ModelLoadingRegistry.INSTANCE.registerVariantProvider {
       val modelStore = ConcurrentHashMap<CacheKey, WireModelParts>()
@@ -73,7 +75,9 @@ object RSWiresClient : ClientModInitializer {
           Blocks.AND_GATE,
           Blocks.OR_GATE,
           Blocks.NAND_GATE,
-          Blocks.NOR_GATE ->
+          Blocks.NOR_GATE,
+          Blocks.XOR_GATE,
+          Blocks.XNOR_GATE ->
             map.computeIfAbsent(model, ::GateModel)
           else -> model
         }

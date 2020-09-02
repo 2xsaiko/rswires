@@ -1,0 +1,7 @@
+{
+  "parent": "rswires:block/xor_gate/alt1",
+  "textures": {
+    "torch": "minecraft:block/redstone_torch_off",
+    "wire": "rswires:block/xor_gate/alt1_off"
+  }
+}
