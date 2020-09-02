@@ -1,13 +1,11 @@
 package net.dblsaiko.rswires.common.util
 
 import net.dblsaiko.hctm.common.util.ext.rotateClockwise
+import net.dblsaiko.hctm.common.util.ext.rotateCounterClockwise
 import net.dblsaiko.qcommon.croco.Mat4
 import net.dblsaiko.qcommon.croco.Vec3
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.Direction.Axis.X
-import net.minecraft.util.math.Direction.Axis.Y
-import net.minecraft.util.math.Direction.Axis.Z
 import net.minecraft.util.math.Direction.DOWN
 import net.minecraft.util.math.Direction.EAST
 import net.minecraft.util.math.Direction.NORTH
@@ -61,33 +59,6 @@ fun reverseAdjustRotation(side: Direction, edge: Direction): Int {
   }
 
   return r
-}
-
-// TODO move into hctm-base
-fun Direction.rotateCounterClockwise(axis: Direction.Axis): Direction {
-  return when (axis) {
-    X -> when (this) {
-      DOWN -> NORTH
-      UP -> SOUTH
-      NORTH -> UP
-      SOUTH -> DOWN
-      else -> this
-    }
-    Y -> when (this) {
-      NORTH -> WEST
-      SOUTH -> EAST
-      WEST -> SOUTH
-      EAST -> NORTH
-      else -> this
-    }
-    Z -> when (this) {
-      DOWN -> EAST
-      UP -> WEST
-      WEST -> DOWN
-      EAST -> UP
-      else -> this
-    }
-  }
 }
 
 private val matrixMap = Direction.values().asIterable().associateWith { face ->
