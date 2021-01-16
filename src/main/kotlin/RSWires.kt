@@ -5,12 +5,16 @@ import net.dblsaiko.rswires.common.init.BlockEntityTypes
 import net.dblsaiko.rswires.common.init.Blocks
 import net.dblsaiko.rswires.common.init.Items
 import net.fabricmc.api.ModInitializer
-import net.fabricmc.fabric.api.event.world.WorldTickCallback
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.server.world.ServerWorld
+import org.apache.logging.log4j.LogManager
 
 const val MOD_ID = "rswires"
 
 object RSWires : ModInitializer {
+
+  internal var logger = LogManager.getLogger(MOD_ID)
+
   var wiresGivePower = true
 
   override fun onInitialize() {
@@ -18,10 +22,11 @@ object RSWires : ModInitializer {
     Blocks.register()
     Items.register()
 
-    WorldTickCallback.EVENT.register(WorldTickCallback {
+    ServerTickEvents.END_WORLD_TICK.register(ServerTickEvents.EndWorldTick {
       if (it is ServerWorld) {
         RedstoneWireUtils.flushUpdates(it)
       }
     })
   }
+
 }
