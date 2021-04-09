@@ -34,3 +34,11 @@ block.rswires.brown_bundled_cable:      Brown Bundled Cable
 block.rswires.green_bundled_cable:      Green Bundled Cable
 block.rswires.red_bundled_cable:        Red Bundled Cable
 block.rswires.black_bundled_cable:      Black Bundled Cable
+
+block.rswires.null_cell:    Null Cell
+block.rswires.and_gate:     AND Gate
+block.rswires.nand_gate:    NAND Gate
+block.rswires.nor_gate:     NOR Gate
+block.rswires.or_gate:      OR Gate
+block.rswires.xnor_gate:    XNOR Gate
+block.rswires.xor_gate:     XOR Gate

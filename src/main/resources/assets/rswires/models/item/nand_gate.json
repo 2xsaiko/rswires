@@ -1,0 +1,195 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"base": "rswires:block/nand_gate/base",
+		"torch": "minecraft:block/redstone_torch",
+		"torch_off": "minecraft:block/redstone_torch_off",
+		"wire_back": "rswires:block/nand_gate/back_off",
+		"wire_left": "rswires:block/nand_gate/left_off",
+		"wire_right": "rswires:block/nand_gate/right_off",
+		"wire_output": "rswires:block/nand_gate/output_off"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 2], "texture": "#base"},
+				"east": {"uv": [0, 0, 16, 2], "texture": "#base"},
+				"south": {"uv": [0, 0, 16, 2], "texture": "#base"},
+				"west": {"uv": [0, 0, 16, 2], "texture": "#base"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#base"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#base"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#wire_output"}
+			}
+		},
+		{
+			"from": [10.5, 2, 7],
+			"to": [12.5, 6, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [11.5, 8, 13]},
+			"faces": {
+				"up": {"uv": [7, 6, 9, 8], "texture": "#torch"}
+			}
+		},
+		{
+			"from": [10.5, 2, 6],
+			"to": [12.5, 7, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [11.5, 8, 13]},
+			"faces": {
+				"east": {"uv": [6, 5, 10, 10], "texture": "#torch"},
+				"west": {"uv": [6, 5, 10, 10], "texture": "#torch"}
+			}
+		},
+		{
+			"from": [9.5, 2, 7],
+			"to": [13.5, 7, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [11.5, 8, 13]},
+			"faces": {
+				"north": {"uv": [6, 5, 10, 11], "texture": "#torch"},
+				"south": {"uv": [6, 5, 10, 10], "texture": "#torch"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#wire_output"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#wire_output"}
+			}
+		},
+		{
+			"from": [2.5, 2, 7],
+			"to": [6.5, 7, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [4.5, 8, 13]},
+			"faces": {
+				"north": {"uv": [6, 5, 10, 11], "texture": "#torch"},
+				"south": {"uv": [6, 5, 10, 10], "texture": "#torch"}
+			}
+		},
+		{
+			"from": [3.5, 2, 6],
+			"to": [5.5, 7, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [4.5, 8, 13]},
+			"faces": {
+				"east": {"uv": [6, 5, 10, 10], "texture": "#torch"},
+				"west": {"uv": [6, 5, 10, 10], "texture": "#torch"}
+			}
+		},
+		{
+			"from": [3.5, 2, 7],
+			"to": [5.5, 6, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [4.5, 8, 13]},
+			"faces": {
+				"up": {"uv": [7, 6, 9, 8], "texture": "#torch"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#wire_output"}
+			}
+		},
+		{
+			"from": [6, 2, 7],
+			"to": [10, 7, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 13]},
+			"faces": {
+				"north": {"uv": [6, 5, 10, 11], "texture": "#torch"},
+				"south": {"uv": [6, 5, 10, 10], "texture": "#torch"}
+			}
+		},
+		{
+			"from": [7, 2, 6],
+			"to": [9, 7, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 13]},
+			"faces": {
+				"east": {"uv": [6, 5, 10, 10], "texture": "#torch"},
+				"west": {"uv": [6, 5, 10, 10], "texture": "#torch"}
+			}
+		},
+		{
+			"from": [7, 2, 7],
+			"to": [9, 6, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 13]},
+			"faces": {
+				"up": {"uv": [7, 6, 9, 8], "texture": "#torch"}
+			}
+		}
+	],
+	"groups": [0,
+		{
+			"name": "right_on",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "right_off",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "right",
+			"origin": [8, 8, 8],
+			"children": [1, 2, 3, 4]
+		},
+		{
+			"name": "output_on",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "output_off",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "output",
+			"origin": [8, 8, 8],
+			"children": [5]
+		},
+		{
+			"name": "left_on",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "left_off",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "left",
+			"origin": [8, 8, 8],
+			"children": [6, 7, 8, 9]
+		},
+		{
+			"name": "back_on",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "back_off",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "back",
+			"origin": [8, 8, 8],
+			"children": [10, 11, 12, 13]
+		}
+	]
+}
