@@ -19,10 +19,10 @@
     "client": [{ "value": "net.dblsaiko.rswires.client.RSWiresClient", "adapter": "kotlin" }]
   },
   "depends": {
-    "minecraft": "~1.16.2",
+    "minecraft": "~1.16.5",
     "fabricloader": ">=0.4.0",
     "fabric": "*",
-    "fabric-language-kotlin": ">=1.4",
+    "fabric-language-kotlin": ">=1.5.0+kotlin.1.4.31",
     "hctm-base": "^3.5.0",
     "libaddict": ">=0.1.2"
   },
