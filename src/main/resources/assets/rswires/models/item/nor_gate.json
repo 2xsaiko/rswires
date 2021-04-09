@@ -1,0 +1,149 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"base": "rswires:block/nor_gate/base",
+		"torch": "minecraft:block/redstone_torch",
+		"torch_off": "minecraft:block/redstone_torch_off",
+		"wire_back": "rswires:block/nor_gate/back_off",
+		"wire_left": "rswires:block/nor_gate/left_off",
+		"wire_right": "rswires:block/nor_gate/right_off",
+		"wire_output": "rswires:block/nor_gate/output_off"
+	},
+	"elements": [
+		{
+			"name": "plate",
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 2], "texture": "#base", "cullface": "north"},
+				"east": {"uv": [0, 0, 16, 2], "texture": "#base", "cullface": "east"},
+				"south": {"uv": [0, 0, 16, 2], "texture": "#base", "cullface": "south"},
+				"west": {"uv": [0, 0, 16, 2], "texture": "#base", "cullface": "west"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#base"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#base", "cullface": "down"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#wire_output"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#wire_output"}
+			}
+		},
+		{
+			"from": [6, 2, 7],
+			"to": [10, 7, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 13]},
+			"faces": {
+				"north": {"uv": [6, 5, 10, 11], "texture": "#torch"},
+				"south": {"uv": [6, 5, 10, 10], "texture": "#torch"}
+			}
+		},
+		{
+			"from": [7, 2, 6],
+			"to": [9, 7, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 13]},
+			"faces": {
+				"east": {"uv": [6, 5, 10, 10], "texture": "#torch"},
+				"west": {"uv": [6, 5, 10, 10], "texture": "#torch"}
+			}
+		},
+		{
+			"from": [7, 2, 7],
+			"to": [9, 6, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 13]},
+			"faces": {
+				"up": {"uv": [7, 6, 9, 8], "texture": "#torch"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#wire_output"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#wire_output"}
+			}
+		}
+	],
+	"groups": [0,
+		{
+			"name": "right_on",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "right_off",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "right",
+			"origin": [8, 8, 8],
+			"children": [1]
+		},
+		{
+			"name": "output_on",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "output_off",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "output_input",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "output",
+			"origin": [8, 8, 8],
+			"children": [2, 3, 4, 5]
+		},
+		{
+			"name": "left_on",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "left_off",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "left",
+			"origin": [8, 8, 8],
+			"children": [6]
+		},
+		{
+			"name": "back_on",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "back_off",
+			"origin": [8, 8, 8],
+			"children": []
+		},
+		{
+			"name": "back",
+			"origin": [8, 8, 8],
+			"children": [7]
+		}
+	]
+}
