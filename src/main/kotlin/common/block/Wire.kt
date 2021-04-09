@@ -44,6 +44,8 @@ abstract class BaseRedstoneWireBlock(settings: AbstractBlock.Settings, height: F
     defaultState = defaultState.with(WireProperties.POWERED, false)
   }
 
+  private fun isCorrectBlock(state: BlockState) = state.block == RSWiresBlocks.RED_ALLOY_WIRE
+
   override fun appendProperties(b: Builder<Block, BlockState>) {
     super.appendProperties(b)
     b.add(WireProperties.POWERED)
@@ -179,23 +181,30 @@ class BundledCableBlock(settings: AbstractBlock.Settings, val color: DyeColor?) 
 data class RedAlloyWirePartExt(override val side: Direction) : PartExt, WirePartExtType, PartRedstoneCarrier {
   override val type = RedstoneWireType.RedAlloy
 
+  private fun isCorrectBlock(state: BlockState) = state.block == RSWiresBlocks.RED_ALLOY_WIRE
+
   override fun getState(world: World, self: NetNode): Boolean {
     val pos = self.data.pos
-    return world.getBlockState(pos)[WireProperties.POWERED]
+    val state = world.getBlockState(pos)
+    return isCorrectBlock(state) && state[WireProperties.POWERED]
   }
 
   override fun setState(world: World, self: NetNode, state: Boolean) {
     val pos = self.data.pos
-    val state = world.getBlockState(pos).with(WireProperties.POWERED, state)
-    world.setBlockState(pos, state)
+    var blockState = world.getBlockState(pos)
+
+    if (!isCorrectBlock(blockState)) return
+
+    blockState = blockState.with(WireProperties.POWERED, state)
+    world.setBlockState(pos, blockState)
 
     // update neighbors 2 blocks away for strong redstone signal
-    WireUtils.getOccupiedSides(state)
+    WireUtils.getOccupiedSides(blockState)
       .map { pos.offset(it) }
       .flatMap { Direction.values().map { d -> it.offset(d) } }
       .distinct()
       .minus(pos)
-      .forEach { world.updateNeighbor(it, state.block, pos) }
+      .forEach { world.updateNeighbor(it, blockState.block, pos) }
   }
 
   override fun getInput(world: World, self: NetNode): Boolean {
@@ -220,19 +229,28 @@ data class RedAlloyWirePartExt(override val side: Direction) : PartExt, WirePart
 data class InsulatedWirePartExt(override val side: Direction, val color: DyeColor) : PartExt, WirePartExtType, PartRedstoneCarrier {
   override val type = RedstoneWireType.Colored(color)
 
+  private fun isCorrectBlock(state: BlockState) = state.block in RSWiresBlocks.INSULATED_WIRES.values
+
   override fun getState(world: World, self: NetNode): Boolean {
     val pos = self.data.pos
-    return world.getBlockState(pos)[WireProperties.POWERED]
+    val state = world.getBlockState(pos)
+    return isCorrectBlock(state) && state[WireProperties.POWERED]
   }
 
   override fun setState(world: World, self: NetNode, state: Boolean) {
     val pos = self.data.pos
-    world.setBlockState(pos, world.getBlockState(pos).with(WireProperties.POWERED, state))
+    val blockState = world.getBlockState(pos)
+    if (!isCorrectBlock(blockState)) return
+    world.setBlockState(pos, blockState.with(WireProperties.POWERED, state))
   }
 
   override fun getInput(world: World, self: NetNode): Boolean {
     val pos = self.data.pos
-    return RedstoneWireUtils.isReceivingPower(world.getBlockState(pos), world, pos, false)
+    val state = world.getBlockState(pos)
+
+    if (!isCorrectBlock(state)) return false
+
+    return RedstoneWireUtils.isReceivingPower(state, world, pos, false)
   }
 
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
@@ -252,6 +270,9 @@ data class InsulatedWirePartExt(override val side: Direction, val color: DyeColo
 data class BundledCablePartExt(override val side: Direction, val color: DyeColor?, val inner: DyeColor) : PartExt, WirePartExtType, PartRedstoneCarrier {
   override val type = RedstoneWireType.Bundled(color, inner)
 
+  fun isCorrectBlock(state: BlockState) = state.block == RSWiresBlocks.UNCOLORED_BUNDLED_CABLE ||
+    state.block in RSWiresBlocks.COLORED_BUNDLED_CABLES.values
+
   override fun getState(world: World, self: NetNode): Boolean {
     return false
   }
@@ -260,7 +281,11 @@ data class BundledCablePartExt(override val side: Direction, val color: DyeColor
 
   override fun getInput(world: World, self: NetNode): Boolean {
     val pos = self.data.pos
-    return BundledCableUtils.getReceivedData(world.getBlockState(pos), world, pos).toUInt() and (1u shl inner.id) != 0u
+    val state = world.getBlockState(pos)
+
+    if (!isCorrectBlock(state)) return false
+
+    return BundledCableUtils.getReceivedData(state, world, pos).toUInt() and (1u shl inner.id) != 0u
   }
 
   override fun tryConnect(self: NetNode, world: ServerWorld, pos: BlockPos, nv: NodeView): Set<NetNode> {
