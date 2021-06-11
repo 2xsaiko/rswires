@@ -17,13 +17,12 @@ import net.dblsaiko.hctm.common.wire.WirePartExtType
 import net.dblsaiko.hctm.common.wire.find
 import net.dblsaiko.hctm.common.wire.getWireNetworkState
 import net.dblsaiko.rswires.RSWires
-import net.dblsaiko.rswires.common.init.BlockEntityTypes
 import net.minecraft.block.AbstractBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
-import net.minecraft.nbt.ByteTag
-import net.minecraft.nbt.Tag
+import net.minecraft.nbt.NbtByte
+import net.minecraft.nbt.NbtElement
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.state.StateManager.Builder
 import net.minecraft.state.property.Properties
@@ -36,7 +35,6 @@ import net.minecraft.world.dimension.DimensionType
 import java.util.*
 import kotlin.experimental.and
 import kotlin.experimental.or
-import net.dblsaiko.rswires.common.init.Blocks as RSWiresBlocks
 
 abstract class BaseRedstoneWireBlock(settings: AbstractBlock.Settings, height: Float) : SingleBaseWireBlock(settings, height) {
 
@@ -44,7 +42,7 @@ abstract class BaseRedstoneWireBlock(settings: AbstractBlock.Settings, height: F
     defaultState = defaultState.with(WireProperties.POWERED, false)
   }
 
-  private fun isCorrectBlock(state: BlockState) = state.block == RSWiresBlocks.RED_ALLOY_WIRE
+  private fun isCorrectBlock(state: BlockState) = state.block == RSWires.blocks.redAlloyWire
 
   override fun appendProperties(b: Builder<Block, BlockState>) {
     super.appendProperties(b)
@@ -107,7 +105,7 @@ class RedAlloyWireBlock(settings: AbstractBlock.Settings) : BaseRedstoneWireBloc
 
   override fun createPartExtFromSide(side: Direction) = RedAlloyWirePartExt(side)
 
-  override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.RED_ALLOY_WIRE)
+  override fun createBlockEntity(pos: BlockPos, state: BlockState) = BaseWireBlockEntity(RSWires.blockEntityTypes.redAlloyWire, pos, state)
 
   override fun isReceivingPower(state: BlockState, world: World, pos: BlockPos) =
     RedstoneWireUtils.isReceivingPower(state, world, pos, true)
@@ -118,7 +116,7 @@ class InsulatedWireBlock(settings: AbstractBlock.Settings, val color: DyeColor) 
 
   override fun createPartExtFromSide(side: Direction) = InsulatedWirePartExt(side, color)
 
-  override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.INSULATED_WIRE)
+  override fun createBlockEntity(pos: BlockPos, state: BlockState) = BaseWireBlockEntity(RSWires.blockEntityTypes.insulatedWire, pos, state)
 
   override fun getStrongRedstonePower(state: BlockState, view: BlockView, pos: BlockPos, facing: Direction): Int {
     // Fix for comparator side input which only respects strong power
@@ -144,8 +142,8 @@ class InsulatedWireBlock(settings: AbstractBlock.Settings, val color: DyeColor) 
 
 class BundledCableBlock(settings: AbstractBlock.Settings, val color: DyeColor?) : BaseWireBlock(settings, 4 / 16f) {
 
-  override fun createExtFromTag(tag: Tag): PartExt? {
-    val data = (tag as? ByteTag)?.byte ?: return null
+  override fun createExtFromTag(tag: NbtElement): PartExt? {
+    val data = (tag as? NbtByte)?.byteValue() ?: return null
     val inner = DyeColor.byId(data.toInt() shr 4 and 15)
     val dir = data and 15
     return if (dir in 0 until 6) BundledCablePartExt(Direction.byId(dir.toInt()), color, inner)
@@ -174,14 +172,14 @@ class BundledCableBlock(settings: AbstractBlock.Settings, val color: DyeColor?) 
     return super.overrideConnection(world, pos, state, side, edge, current)
   }
 
-  override fun createBlockEntity(view: BlockView) = BaseWireBlockEntity(BlockEntityTypes.BUNDLED_CABLE)
+  override fun createBlockEntity(pos: BlockPos, state: BlockState) = BaseWireBlockEntity(RSWires.blockEntityTypes.bundledCable, pos, state)
 
 }
 
 data class RedAlloyWirePartExt(override val side: Direction) : PartExt, WirePartExtType, PartRedstoneCarrier {
   override val type = RedstoneWireType.RedAlloy
 
-  private fun isCorrectBlock(state: BlockState) = state.block == RSWiresBlocks.RED_ALLOY_WIRE
+  private fun isCorrectBlock(state: BlockState) = state.block == RSWires.blocks.redAlloyWire
 
   override fun getState(world: World, self: NetNode): Boolean {
     val pos = self.data.pos
@@ -221,15 +219,15 @@ data class RedAlloyWirePartExt(override val side: Direction) : PartExt, WirePart
     WireUtils.updateClient(world, pos)
   }
 
-  override fun toTag(): Tag {
-    return ByteTag.of(side.id.toByte())
+  override fun toTag(): NbtElement {
+    return NbtByte.of(side.id.toByte())
   }
 }
 
 data class InsulatedWirePartExt(override val side: Direction, val color: DyeColor) : PartExt, WirePartExtType, PartRedstoneCarrier {
   override val type = RedstoneWireType.Colored(color)
 
-  private fun isCorrectBlock(state: BlockState) = state.block in RSWiresBlocks.INSULATED_WIRES.values
+  private fun isCorrectBlock(state: BlockState) = state.block in RSWires.blocks.insulatedWires.values
 
   override fun getState(world: World, self: NetNode): Boolean {
     val pos = self.data.pos
@@ -262,16 +260,16 @@ data class InsulatedWirePartExt(override val side: Direction, val color: DyeColo
     WireUtils.updateClient(world, pos)
   }
 
-  override fun toTag(): Tag {
-    return ByteTag.of(side.id.toByte())
+  override fun toTag(): NbtElement {
+    return NbtByte.of(side.id.toByte())
   }
 }
 
 data class BundledCablePartExt(override val side: Direction, val color: DyeColor?, val inner: DyeColor) : PartExt, WirePartExtType, PartRedstoneCarrier {
   override val type = RedstoneWireType.Bundled(color, inner)
 
-  fun isCorrectBlock(state: BlockState) = state.block == RSWiresBlocks.UNCOLORED_BUNDLED_CABLE ||
-    state.block in RSWiresBlocks.COLORED_BUNDLED_CABLES.values
+  fun isCorrectBlock(state: BlockState) = state.block == RSWires.blocks.uncoloredBundledCable ||
+      state.block in RSWires.blocks.coloredBundledCables.values
 
   override fun getState(world: World, self: NetNode): Boolean {
     return false
@@ -297,8 +295,8 @@ data class BundledCablePartExt(override val side: Direction, val color: DyeColor
     WireUtils.updateClient(world, pos)
   }
 
-  override fun toTag(): Tag {
-    return ByteTag.of(side.id.toByte() or (inner.id shl 4).toByte())
+  override fun toTag(): NbtElement {
+    return NbtByte.of(side.id.toByte() or (inner.id shl 4).toByte())
   }
 }
 
@@ -399,7 +397,7 @@ object BundledCableUtils {
         val edges = (Direction.values().toSet() - sides).filter { edge -> edge.axis != side.axis }
         edges.map { edge ->
           val otherPos = pos.offset(side)
-          if (world.getBlockState(otherPos).block == RSWiresBlocks.UNCOLORED_BUNDLED_CABLE) 0u
+          if (world.getBlockState(otherPos).block == RSWires.blocks.uncoloredBundledCable) 0u
           else {
             val state = world.getBlockState(otherPos)
             val block = state.block
