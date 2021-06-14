@@ -1,6 +1,6 @@
 package net.dblsaiko.rswires.common.block
 
-import net.dblsaiko.hctm.common.api.BlockBundledCableIo
+import net.dblsaiko.hctm.block.BlockBundledCableIo
 import net.dblsaiko.hctm.common.block.BaseWireBlock
 import net.dblsaiko.hctm.common.block.BaseWireBlockEntity
 import net.dblsaiko.hctm.common.block.BaseWireProperties
@@ -402,7 +402,7 @@ object BundledCableUtils {
                         val state = world.getBlockState(otherPos)
                         val block = state.block
                         if (block is BlockBundledCableIo) {
-                            block.getBundledOutput(state, world, otherPos, side.opposite, edge)
+                            block.getBundledOutput(state, world, otherPos, side.opposite, edge).toUShort()
                         } else 0u
                     }
                 }
