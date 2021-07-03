@@ -1,0 +1,4 @@
+include ru_ru/blocks.str
+include ru_ru/items.str
+
+itemGroup.rswires.all: RSWires
