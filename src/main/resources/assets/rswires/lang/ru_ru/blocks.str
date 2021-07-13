@@ -1,0 +1,36 @@
+block.rswires.red_alloy_wire: Провод из красного сплава
+
+block.rswires.white_insulated_wire:       Белый изолированный провод
+block.rswires.orange_insulated_wire:      Оранжевый изолированный провод
+block.rswires.magenta_insulated_wire:     Сиреневый изолированный провод
+block.rswires.light_blue_insulated_wire:  Светло-синий изолированный провод
+block.rswires.yellow_insulated_wire:      Жёлтый изолированный провод
+block.rswires.lime_insulated_wire:        Лаймовый изолированный провод
+block.rswires.pink_insulated_wire:        Розовый изолированный провод
+block.rswires.gray_insulated_wire:        Серый изолированный провод
+block.rswires.light_gray_insulated_wire:  Светло-серый изолированный провод
+block.rswires.cyan_insulated_wire:        Бирюзовый изолированный провод
+block.rswires.purple_insulated_wire:      Фиолетовый изолированный провод
+block.rswires.blue_insulated_wire:        Синий изолированный провод
+block.rswires.brown_insulated_wire:       Коричневый изолированный провод
+block.rswires.green_insulated_wire:       Зелёный изолированный провод
+block.rswires.red_insulated_wire:         Красный изолированный провод
+block.rswires.black_insulated_wire:       Чёрный изолированный провод
+
+block.rswires.bundled_cable:            Шина
+block.rswires.white_bundled_cable:      Белая шина
+block.rswires.orange_bundled_cable:     Оранжевая шина
+block.rswires.magenta_bundled_cable:    Сиреневая шина
+block.rswires.light_blue_bundled_cable: Светло-синяя шина
+block.rswires.yellow_bundled_cable:     Жёлтая шина
+block.rswires.lime_bundled_cable:       Лаймовая шина
+block.rswires.pink_bundled_cable:       Розовая шина
+block.rswires.gray_bundled_cable:       Серая шина
+block.rswires.light_gray_bundled_cable: Светло-серая шина
+block.rswires.cyan_bundled_cable:       Бирюзовая шина
+block.rswires.purple_bundled_cable:     Фиолетовая шина
+block.rswires.blue_bundled_cable:       Синяя шина
+block.rswires.brown_bundled_cable:      Коричневая шина
+block.rswires.green_bundled_cable:      Зелёная шина
+block.rswires.red_bundled_cable:        Красная шина
+block.rswires.black_bundled_cable:      Чёрная шина
