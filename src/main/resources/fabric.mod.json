@@ -23,7 +23,7 @@
     "fabricloader": ">=0.4.0",
     "fabric": "*",
     "fabric-language-kotlin": ">=1.4",
-    "hctm-base": "^3.6.0",
+    "hctm-base": "^3.7.0",
     "libaddict": ">=0.3.0"
   },
   "suggests": {
