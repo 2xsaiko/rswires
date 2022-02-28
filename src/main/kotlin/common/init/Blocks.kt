@@ -14,7 +14,6 @@ class Blocks {
     private val reg = BlockRegistry(MOD_ID)
 
     private val wireSettings = FabricBlockSettings.of(Material.STONE)
-        .breakByHand(true)
         .noCollision()
         .strength(0.05f, 0.05f)
 
